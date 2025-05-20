@@ -99,7 +99,6 @@ public class Board {
             //Log error
             return 1;
         }
-        String piece = getPieceAt(currentColumn,currentRow);
 
         if(piece.equals("WP") || piece.equals("BP")){
             if(!isPieceAllowedToMoveAt(piece, currentColumn, currentRow, targetColumn, targetRow)){
