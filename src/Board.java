@@ -93,6 +93,7 @@ public class Board {
     }
     
     public int movePiece(int currentColumn, int currentRow, int targetColumn, int targetRow){
+        String piece = getPieceAt(currentColumn,currentRow);
         if(targetRow < 1 || targetRow > 8 || targetColumn < 1 || targetColumn > 8 ||
            currentRow < 1 || currentRow > 8 || currentColumn < 1 || currentColumn > 8 ||
            getPieceAt(targetColumn,targetRow).charAt(0) == getPieceAt(currentColumn, currentRow).charAt(0) ||
