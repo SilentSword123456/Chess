@@ -6,9 +6,11 @@ public class DisplayManager{
     private String[] pieces;
     private Board chessBoard;
     private int lastClickedColumn, lastClickedRow;
+    private char lastMove;
 
     public DisplayManager(Board chessBoard) {
         lastClickedRow = lastClickedColumn = -1;
+        lastMove = 'B';
         pieces = new String[64];
         this.chessBoard = chessBoard;
         for (int i = 0; i < 64; i++) {
@@ -34,9 +36,14 @@ public class DisplayManager{
 
     public void clickedSquare(int column, int row){
         if( chessBoard.getPieceAt(lastClickedColumn,lastClickedRow).charAt(0) != chessBoard.getPieceAt(column,row).charAt(0)
-            && !chessBoard.getPieceAt(lastClickedColumn,lastClickedRow).equals(" ")) {
+            && !chessBoard.getPieceAt(lastClickedColumn,lastClickedRow).equals(" ") &&
+            chessBoard.getPieceAt(lastClickedColumn,lastClickedRow).charAt(0) != lastMove) {
 
             chessBoard.movePiece(lastClickedColumn, lastClickedRow, column, row);
+            if(lastMove == 'B')
+                lastMove = 'W';
+            else
+                lastMove = 'B';
         }
 
         lastClickedColumn = column;
