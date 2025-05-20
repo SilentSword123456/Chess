@@ -102,12 +102,12 @@ public class Board {
         }
         String piece = getPieceAt(currentColumn,currentRow);
 
-        if(piece.equals("WP")){
+        if(piece.equals("WP") || piece.equals("BP")){
             if(!isPieceAllowedToMoveAt(piece, currentColumn, currentRow, targetColumn, targetRow)){
                 //Log error
                 return 1;
             }
-            if(targetRow != 8){
+            if(targetRow != 8 && targetRow != 1){
                 removePiece(currentColumn, currentRow);
                 //Removed the piece from currentColumn, currentRow
                 whitePoints += getPiecePoints(getPieceAt(targetColumn, targetRow));
@@ -115,10 +115,44 @@ public class Board {
                 placePiece(piece,targetColumn,targetRow);
                 //Placed the piece to targetColumn, targetRow
             }
+            else{
+                removePiece(currentColumn,currentRow);
+                whitePoints += getPiecePoints(getPieceAt(targetColumn, targetRow));
+                removePiece(targetColumn,targetRow);
+                placePiece(piece.charAt(0) + "Q",targetColumn,targetRow);
+            }
         }
+
 
         displayBoard();
         return 0;
+    }
+
+    private boolean isPieceAllowedToMoveAt(String piece, int currentColumn, int currentRow, int targetColumn, int targetRow){
+        if(getPieceAt(targetColumn,targetRow).length() == 2 && getPieceAt(targetColumn,targetRow).charAt(1) == 'K')
+            return false;
+
+        if(piece.equals("WP")){
+            if((targetColumn == currentColumn - 1 || targetColumn == currentColumn + 1) &&
+                    targetRow == currentRow + 1 && !getPieceAt(targetColumn, targetRow).equals(" ")){
+                //Add en' passant rule
+                return true;
+            }
+            if(targetColumn == currentColumn && (targetRow == currentRow + 1 || targetRow == 4) && getPieceAt(targetColumn, targetRow).equals(" "))
+                return true;
+        }
+
+        if(piece.equals("BP")){
+            if((targetColumn == currentColumn - 1 || targetColumn == currentColumn + 1) &&
+                    targetRow == currentRow - 1 && !getPieceAt(targetColumn, targetRow).equals(" ")){
+                //Add en' passant rule
+                return true;
+            }
+            if(targetColumn == currentColumn && (targetRow == currentRow - 1 || targetRow == 5) && getPieceAt(targetColumn, targetRow).equals(" "))
+                return true;
+        }
+
+        return false;
     }
 
     public void clearBoard(){
@@ -226,19 +260,6 @@ public class Board {
             return "BK";
 
         return " ";
-    }
-
-    private boolean isPieceAllowedToMoveAt(String piece, int currentColumn, int currentRow, int targetColumn, int targetRow){
-        if(piece.equals("WP")){
-            if((targetColumn == currentColumn - 1 || targetColumn == currentColumn + 1) &&
-                targetRow == currentRow + 1 && !getPieceAt(targetColumn, targetRow).equals(" ")){
-                //Add en' passant rule
-                return true;
-            }
-            if(targetColumn == currentColumn && (targetRow == currentRow + 1 || targetRow == 4) && getPieceAt(targetColumn, targetRow).equals(" "))
-                return true;
-        }
-        return false;
     }
     private char coordsShiftBits(int column, int row){
         return (char) ((column - 1) * 8 + row -1);
