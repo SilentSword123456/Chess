@@ -45,18 +45,18 @@ public class ChessBoardPanel extends JPanel {
         String imgPath;
         switch (piece) {
             case "WP": imgPath = "/img/"  + (darkSquare ? "B" : "W") + "WP.jpg"; break;
-            case "WH": imgPath = "/img/WH.jpg"; break;
-            case "WB": imgPath = "/img/WB.jpg"; break;
-            case "WR": imgPath = "/img/WR.jpg"; break;
-            case "WQ": imgPath = "/img/WQ.jpg"; break;
-            case "WK": imgPath = "/img/WK.jpg"; break;
+            case "WH": imgPath = "/img/"  + (darkSquare ? "B" : "W") + "WH.jpg"; break;
+            case "WB": imgPath = "/img/"  + (darkSquare ? "B" : "W") + "WB.jpg"; break;
+            case "WR": imgPath = "/img/"  + (darkSquare ? "B" : "W") + "WR.jpg"; break;
+            case "WQ": imgPath = "/img/"  + (darkSquare ? "B" : "W") + "WQ.jpg"; break;
+            case "WK": imgPath = "/img/"  + (darkSquare ? "B" : "W") + "WK.jpg"; break;
             case "BP": imgPath = "/img/"  + (darkSquare ? "B" : "W") + "BP.jpg"; break;
-            case "BH": imgPath = "/img/WH.jpg"; break;
-            case "BB": imgPath = "/img/WB.jpg"; break;
-            case "BR": imgPath = "/img/WR.jpg"; break;
-            case "BQ": imgPath = "/img/WQ.jpg"; break;
-            case "BK": imgPath = "/img/WK.jpg"; break;
-            default:   imgPath = "/img/W.jpg";
+            case "BH": imgPath = "/img/"  + (darkSquare ? "B" : "W") + "BH.jpg"; break;
+            case "BB": imgPath = "/img/"  + (darkSquare ? "B" : "W") + "BB.jpg"; break;
+            case "BR": imgPath = "/img/"  + (darkSquare ? "B" : "W") + "BR.jpg"; break;
+            case "BQ": imgPath = "/img/"  + (darkSquare ? "B" : "W") + "BQ.jpg"; break;
+            case "BK": imgPath = "/img/"  + (darkSquare ? "B" : "W") + "BK.jpg"; break;
+            default:   imgPath = "/img/" + (darkSquare ? "B" : "W") + ".jpg";
         }
         return imgPath;
     }
