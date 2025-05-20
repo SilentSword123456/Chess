@@ -4,6 +4,12 @@ public class Board {
     private int whitePoints;
     private int blackPoints;
     private DisplayManager window;
+    private int[][] knightAllowedJumps = {
+            {-1,-2},{-1,2},
+            {1,-2} ,{1,2},
+            {-2,-1},{-2,1},
+            {2,-1} ,{2,1}
+    };
     public Board(){
         window = new DisplayManager(this);
         whitePoints = 0;
