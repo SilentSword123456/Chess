@@ -101,10 +101,6 @@ public class Board {
         }
 
         if(piece.equals("WP") || piece.equals("BP")){
-            if(!isPieceAllowedToMoveAt(piece, currentColumn, currentRow, targetColumn, targetRow)){
-                //Log error
-                return 1;
-            }
             if(targetRow != 8 && targetRow != 1){
                 removePiece(currentColumn, currentRow);
                 //Removed the piece from currentColumn, currentRow
