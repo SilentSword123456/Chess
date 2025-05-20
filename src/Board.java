@@ -98,36 +98,35 @@ public class Board {
         }
     }
     
-    public int movePiece(int currentColumn, int currentRow, int targetColumn, int targetRow){
+    public boolean movePiece(int currentColumn, int currentRow, int targetColumn, int targetRow){
         String piece = getPieceAt(currentColumn,currentRow);
         if(targetRow < 1 || targetRow > 8 || targetColumn < 1 || targetColumn > 8 ||
            currentRow < 1 || currentRow > 8 || currentColumn < 1 || currentColumn > 8 ||
            getPieceAt(targetColumn,targetRow).charAt(0) == getPieceAt(currentColumn, currentRow).charAt(0) ||
                 !isPieceAllowedToMoveAt(piece, currentColumn, currentRow, targetColumn, targetRow)){
             //Log error
-            return 1;
+            return false;
         }
 
-        if(piece.equals("WP") || piece.equals("BP")){
-            if(targetRow != 8 && targetRow != 1){
-                removePiece(currentColumn, currentRow);
-                //Removed the piece from currentColumn, currentRow
+        if(piece.equals("WP") || piece.equals("BP") && targetRow == 1 || targetRow == 8) {
+            removePiece(currentColumn, currentRow);
+            if(piece.equals("WP"))
                 whitePoints += getPiecePoints(getPieceAt(targetColumn, targetRow));
-                removePiece(targetColumn,targetRow);
-                placePiece(piece,targetColumn,targetRow);
-                //Placed the piece to targetColumn, targetRow
-            }
-            else{
-                removePiece(currentColumn,currentRow);
-                whitePoints += getPiecePoints(getPieceAt(targetColumn, targetRow));
-                removePiece(targetColumn,targetRow);
-                placePiece(piece.charAt(0) + "Q",targetColumn,targetRow);
-            }
+            else
+                blackPoints += getPiecePoints(getPieceAt(targetColumn, targetRow));
+            removePiece(targetColumn, targetRow);
+            placePiece(piece.charAt(0) + "Q", targetColumn, targetRow);
         }
 
+        removePiece(currentColumn, currentRow);
+        //Removed the piece from currentColumn, currentRow
+        whitePoints += getPiecePoints(getPieceAt(targetColumn, targetRow));
+        removePiece(targetColumn,targetRow);
+        placePiece(piece,targetColumn,targetRow);
+        //Placed the piece to targetColumn, targetRow
 
         displayBoard();
-        return 0;
+        return true;
     }
 
     private boolean isPieceAllowedToMoveAt(String piece, int currentColumn, int currentRow, int targetColumn, int targetRow){
@@ -152,6 +151,13 @@ public class Board {
             }
             if(targetColumn == currentColumn && (targetRow == currentRow - 1 || targetRow == 5) && getPieceAt(targetColumn, targetRow).equals(" "))
                 return true;
+        }
+
+        if(piece.equals("WH") || piece.equals("BH")){
+            for (int i = 0; i < 8; i++)
+                if (currentColumn + knightAllowedJumps[i][0] == targetColumn &&
+                    currentRow + knightAllowedJumps[i][1] == targetRow)
+                    return true;
         }
 
         return false;

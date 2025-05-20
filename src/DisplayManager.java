@@ -39,10 +39,10 @@ public class DisplayManager{
             && !chessBoard.getPieceAt(lastClickedColumn,lastClickedRow).equals(" ") &&
             chessBoard.getPieceAt(lastClickedColumn,lastClickedRow).charAt(0) != lastMove) {
 
-            chessBoard.movePiece(lastClickedColumn, lastClickedRow, column, row);
-            if(lastMove == 'B')
+            boolean result = chessBoard.movePiece(lastClickedColumn, lastClickedRow, column, row);
+            if(lastMove == 'B' && result)
                 lastMove = 'W';
-            else
+            else if(result)
                 lastMove = 'B';
         }
 
