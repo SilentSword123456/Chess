@@ -90,7 +90,6 @@ public class Board {
             }
             System.out.println();
         }
-        //window.update();
     }
     
     public int movePiece(int currentColumn, int currentRow, int targetColumn, int targetRow){
