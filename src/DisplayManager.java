@@ -33,8 +33,11 @@ public class DisplayManager{
     }
 
     public void clickedSquare(int column, int row){
-        if(chessBoard.getPieceAt(column,row).equals(" ") && !chessBoard.getPieceAt(lastClickedColumn,lastClickedRow).equals(" "))
-            chessBoard.movePiece(lastClickedColumn,lastClickedRow,column,row);
+        if( chessBoard.getPieceAt(lastClickedColumn,lastClickedRow).charAt(0) != chessBoard.getPieceAt(column,row).charAt(0)
+            && !chessBoard.getPieceAt(lastClickedColumn,lastClickedRow).equals(" ")) {
+
+            chessBoard.movePiece(lastClickedColumn, lastClickedRow, column, row);
+        }
 
         lastClickedColumn = column;
         lastClickedRow = row;

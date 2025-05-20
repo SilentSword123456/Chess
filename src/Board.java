@@ -5,6 +5,7 @@ public class Board {
     private int blackPoints;
     private DisplayManager window;
     public Board(){
+        window = new DisplayManager(this);
         whitePoints = 0;
         blackPoints = 0;
         whitePawns = 0L;
@@ -51,8 +52,6 @@ public class Board {
 
         blackKing = 0L;
         placePiece("BK",5,8);
-
-        window = new DisplayManager(this);
     }
 
     public void displayBoard(){
@@ -91,7 +90,7 @@ public class Board {
             }
             System.out.println();
         }
-        window.update();
+        //window.update();
     }
     
     public int movePiece(int currentColumn, int currentRow, int targetColumn, int targetRow){
@@ -112,12 +111,13 @@ public class Board {
                 removePiece(currentColumn, currentRow);
                 //Removed the piece from currentColumn, currentRow
                 whitePoints += getPiecePoints(getPieceAt(targetColumn, targetRow));
+                removePiece(targetColumn,targetRow);
                 placePiece(piece,targetColumn,targetRow);
                 //Placed the piece to targetColumn, targetRow
-                return 0;
             }
         }
 
+        displayBoard();
         return 0;
     }
 
@@ -164,6 +164,7 @@ public class Board {
                 break;
             default:
         }
+        window.update();
     }
 
     public void placePiece(String piece,int column, int row){
@@ -194,6 +195,7 @@ public class Board {
                 break;
             default:
         }
+        window.update();
     }
     
     public String getPieceAt(int column, int row){

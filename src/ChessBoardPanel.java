@@ -34,6 +34,7 @@ public class ChessBoardPanel extends JPanel {
             String imgPath = getPieceImgPath(pieces[i], i);
             tiles[i] = new ImageIcon(Objects.requireNonNull(getClass().getResource(imgPath))).getImage();
         }
+        repaint();
     }
 
     private String getPieceImgPath(String piece, int i){
