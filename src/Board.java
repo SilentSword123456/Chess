@@ -130,9 +130,6 @@ public class Board {
     }
 
     private boolean isPieceAllowedToMoveAt(String piece, int currentColumn, int currentRow, int targetColumn, int targetRow){
-        if(getPieceAt(targetColumn,targetRow).length() == 2 && getPieceAt(targetColumn,targetRow).charAt(1) == 'K')
-            return false;
-
         if(piece.equals("WP")){
             if((targetColumn == currentColumn - 1 || targetColumn == currentColumn + 1) &&
                     targetRow == currentRow + 1 && !getPieceAt(targetColumn, targetRow).equals(" ")){
