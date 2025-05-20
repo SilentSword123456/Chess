@@ -9,6 +9,11 @@ public class Board {
             {1,-2} ,{1,2},
             {-2,-1},{-2,1},
             {2,-1} ,{2,1}
+    },
+    kingAllowedMoves = {
+            {-1,1}, {0,1} ,{1,1},
+            {-1,0}, {1,0} ,
+            {-1,-1},{0,-1},{1,-1}
     };
     public Board(){
         window = new DisplayManager(this);
@@ -130,6 +135,11 @@ public class Board {
     }
 
     private boolean isPieceAllowedToMoveAt(String piece, int currentColumn, int currentRow, int targetColumn, int targetRow){
+        boolean isCalledFromCheckMethod = false;
+        if(targetColumn<0){
+            isCalledFromCheckMethod = true;
+            targetColumn *= -1;
+        }
         if(piece.equals("WP")){
             if((targetColumn == currentColumn - 1 || targetColumn == currentColumn + 1) &&
                     targetRow == currentRow + 1 && !getPieceAt(targetColumn, targetRow).equals(" ")){
@@ -156,7 +166,85 @@ public class Board {
                     currentRow + knightAllowedJumps[i][1] == targetRow)
                     return true;
         }
+        if(piece.equals("WB") || piece.equals("BB") || piece.equals("WQ") || piece.equals("BQ")){
+            int columnModifier = 1,rowModifier = 1,nextColumn,nextRow;
 
+            if(targetColumn < currentColumn)
+                columnModifier = - 1;
+            if(targetRow < currentRow)
+                rowModifier = -1;
+
+
+            nextColumn = currentColumn + columnModifier;
+            nextRow = currentRow + rowModifier;
+            while (getPieceAt(nextColumn, nextRow).equals(" ") &&
+                    nextColumn >= 1 && nextColumn <= 8 && nextRow >= 1 && nextRow <= 8 &&
+                    nextColumn != targetColumn && nextRow != targetRow){
+                nextColumn += columnModifier;
+                nextRow += rowModifier;
+            }
+
+            if(nextColumn >= 1 && nextColumn <= 8 && nextRow >= 1 && nextRow <= 8 && nextColumn == targetColumn && nextRow == targetRow)
+                return true;
+        }
+
+        if(piece.equals("WR") || piece.equals("BR") || piece.equals("WQ") || piece.equals("BQ")){
+            if ( !(currentColumn == targetColumn || currentRow == targetRow))
+                return false;
+
+            int columnModifier = 1,rowModifier = 0,nextColumn,nextRow;
+            if(currentColumn==targetColumn) {
+                columnModifier = 0;
+                rowModifier = 1;
+                if(targetRow < currentRow)
+                    rowModifier = -1;
+
+            }
+            else if(currentColumn > targetColumn)
+                columnModifier = -1;
+
+            nextColumn = currentColumn + columnModifier;
+            nextRow = currentRow + rowModifier;
+            while (getPieceAt(nextColumn, nextRow).equals(" ") &&
+                    nextColumn >= 1 && nextColumn <= 8 && nextRow >= 1 && nextRow <= 8 &&
+                    (nextColumn != targetColumn || columnModifier == 0) &&
+                    (nextRow != targetRow || rowModifier == 0)){
+                nextColumn += columnModifier;
+                nextRow += rowModifier;
+            }
+
+            if(nextColumn >= 1 && nextColumn <= 8 && nextRow >= 1 && nextRow <= 8 && nextColumn == targetColumn && nextRow == targetRow)
+                return true;
+        }
+        if(piece.equals("WK") || piece.equals("BK")){
+            for (int i = 0; i < 8; i++) {
+                if (targetColumn == currentColumn + kingAllowedMoves[i][0] && targetRow == currentRow + kingAllowedMoves[i][1]){
+
+                    if(isCalledFromCheckMethod)
+                        return true;
+                    String tempPiece = getPieceAt(targetColumn,targetRow);
+                    removePiece(targetColumn,targetRow);
+                    removePiece(currentColumn,currentRow);
+                    placePiece(piece,targetColumn,targetRow);
+
+                    boolean a = isSquareUnderCheck(piece.charAt(0),targetColumn,targetRow);
+                    removePiece(targetColumn,targetRow);
+                    placePiece(tempPiece,targetColumn,targetRow);
+                    placePiece(piece,currentColumn,currentRow);
+                    return !a;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isSquareUnderCheck(Character color,int column, int row){
+        for (int i = 0; i < 64; i++) {
+            if (getPieceAt(i/8 + 1,i%8 + 1).charAt(0) != color &&
+                isPieceAllowedToMoveAt(getPieceAt(i/8 + 1,i%8 + 1),i/8 + 1,i%8 + 1,-column,row))
+                 return true;
+        }
         return false;
     }
 
