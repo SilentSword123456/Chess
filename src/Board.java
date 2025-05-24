@@ -4,7 +4,7 @@ public class Board {
     private int whitePoints;
     private int blackPoints;
     private DisplayManager window;
-    private int[][] knightAllowedJumps = {
+    public int[][] knightAllowedJumps = {
             {-1,-2},{-1,2},
             {1,-2} ,{1,2},
             {-2,-1},{-2,1},
@@ -105,10 +105,10 @@ public class Board {
     
     public boolean movePiece(int currentColumn, int currentRow, int targetColumn, int targetRow){
         String piece = getPieceAt(currentColumn,currentRow);
-        if(targetRow < 1 || targetRow > 8 || targetColumn < 1 || targetColumn > 8 ||
-           currentRow < 1 || currentRow > 8 || currentColumn < 1 || currentColumn > 8 ||
-           getPieceAt(targetColumn,targetRow).charAt(0) == getPieceAt(currentColumn, currentRow).charAt(0) ||
-                !isPieceAllowedToMoveAt(piece, currentColumn, currentRow, targetColumn, targetRow)){
+        if (targetRow < 1 || targetRow > 8 || targetColumn < 1 || targetColumn > 8 ||
+            currentRow < 1 || currentRow > 8 || currentColumn < 1 || currentColumn > 8 ||
+            getPieceAt(targetColumn,targetRow).charAt(0) == getPieceAt(currentColumn, currentRow).charAt(0) ||
+            !Rules.isPieceAllowedToMoveAt(this,currentColumn, currentRow, targetColumn, targetRow)){
             //Log error
             return false;
         }
@@ -134,115 +134,10 @@ public class Board {
         return true;
     }
 
-    private boolean isPieceAllowedToMoveAt(String piece, int currentColumn, int currentRow, int targetColumn, int targetRow){
-        boolean isCalledFromCheckMethod = false;
-        if(targetColumn<0){
-            isCalledFromCheckMethod = true;
-            targetColumn *= -1;
-        }
-        if(piece.equals("WP")){
-            if((targetColumn == currentColumn - 1 || targetColumn == currentColumn + 1) &&
-                    targetRow == currentRow + 1 && !getPieceAt(targetColumn, targetRow).equals(" ")){
-                //Add en' passant rule
-                return true;
-            }
-            if(targetColumn == currentColumn && (targetRow == currentRow + 1 || targetRow == 4) && getPieceAt(targetColumn, targetRow).equals(" "))
-                return true;
-        }
-
-        if(piece.equals("BP")){
-            if((targetColumn == currentColumn - 1 || targetColumn == currentColumn + 1) &&
-                    targetRow == currentRow - 1 && !getPieceAt(targetColumn, targetRow).equals(" ")){
-                //Add en' passant rule
-                return true;
-            }
-            if(targetColumn == currentColumn && (targetRow == currentRow - 1 || targetRow == 5) && getPieceAt(targetColumn, targetRow).equals(" "))
-                return true;
-        }
-
-        if(piece.equals("WH") || piece.equals("BH")){
-            for (int i = 0; i < 8; i++)
-                if (currentColumn + knightAllowedJumps[i][0] == targetColumn &&
-                    currentRow + knightAllowedJumps[i][1] == targetRow)
-                    return true;
-        }
-        if(piece.equals("WB") || piece.equals("BB") || piece.equals("WQ") || piece.equals("BQ")){
-            int columnModifier = 1,rowModifier = 1,nextColumn,nextRow;
-
-            if(targetColumn < currentColumn)
-                columnModifier = - 1;
-            if(targetRow < currentRow)
-                rowModifier = -1;
-
-
-            nextColumn = currentColumn + columnModifier;
-            nextRow = currentRow + rowModifier;
-            while (getPieceAt(nextColumn, nextRow).equals(" ") &&
-                    nextColumn >= 1 && nextColumn <= 8 && nextRow >= 1 && nextRow <= 8 &&
-                    nextColumn != targetColumn && nextRow != targetRow){
-                nextColumn += columnModifier;
-                nextRow += rowModifier;
-            }
-
-            if(nextColumn >= 1 && nextColumn <= 8 && nextRow >= 1 && nextRow <= 8 && nextColumn == targetColumn && nextRow == targetRow)
-                return true;
-        }
-
-        if(piece.equals("WR") || piece.equals("BR") || piece.equals("WQ") || piece.equals("BQ")){
-            if ( !(currentColumn == targetColumn || currentRow == targetRow))
-                return false;
-
-            int columnModifier = 1,rowModifier = 0,nextColumn,nextRow;
-            if(currentColumn==targetColumn) {
-                columnModifier = 0;
-                rowModifier = 1;
-                if(targetRow < currentRow)
-                    rowModifier = -1;
-
-            }
-            else if(currentColumn > targetColumn)
-                columnModifier = -1;
-
-            nextColumn = currentColumn + columnModifier;
-            nextRow = currentRow + rowModifier;
-            while (getPieceAt(nextColumn, nextRow).equals(" ") &&
-                    nextColumn >= 1 && nextColumn <= 8 && nextRow >= 1 && nextRow <= 8 &&
-                    (nextColumn != targetColumn || columnModifier == 0) &&
-                    (nextRow != targetRow || rowModifier == 0)){
-                nextColumn += columnModifier;
-                nextRow += rowModifier;
-            }
-
-            if(nextColumn >= 1 && nextColumn <= 8 && nextRow >= 1 && nextRow <= 8 && nextColumn == targetColumn && nextRow == targetRow)
-                return true;
-        }
-        if(piece.equals("WK") || piece.equals("BK")){
-            for (int i = 0; i < 8; i++) {
-                if (targetColumn == currentColumn + kingAllowedMoves[i][0] && targetRow == currentRow + kingAllowedMoves[i][1]){
-
-                    if(isCalledFromCheckMethod)
-                        return true;
-                    String tempPiece = getPieceAt(targetColumn,targetRow);
-                    removePiece(targetColumn,targetRow);
-                    removePiece(currentColumn,currentRow);
-                    placePiece(piece,targetColumn,targetRow);
-
-                    boolean a = isSquareUnderCheck(piece.charAt(0),targetColumn,targetRow);
-                    removePiece(targetColumn,targetRow);
-                    placePiece(tempPiece,targetColumn,targetRow);
-                    placePiece(piece,currentColumn,currentRow);
-                    return !a;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    private boolean isSquareUnderCheck(Character color,int column, int row){
+    protected boolean isSquareUnderCheck(Character color, int column, int row){
         for (int i = 0; i < 64; i++) {
             if (getPieceAt(i/8 + 1,i%8 + 1).charAt(0) != color &&
-                isPieceAllowedToMoveAt(getPieceAt(i/8 + 1,i%8 + 1),i/8 + 1,i%8 + 1,-column,row))
+                Rules.isPieceAllowedToMoveAt(this,i/8 + 1,i%8 + 1,-column,row))
                  return true;
         }
         return false;
@@ -263,7 +158,7 @@ public class Board {
             default -> 0;
         };
     }
-    private void removePiece(int column, int row){
+    protected void removePiece(int column, int row){
         switch(getPieceAt(column, row)){
             case "WP": whitePawns = whitePawns&(~(1L <<coordsShiftBits(column, row)));
                 break;
@@ -293,8 +188,7 @@ public class Board {
         }
         window.update();
     }
-
-    public void placePiece(String piece,int column, int row){
+    protected void placePiece(String piece,int column, int row){
         switch(piece){
             case "WP": whitePawns = whitePawns|(1L <<coordsShiftBits(column, row));
                 break;
@@ -324,8 +218,7 @@ public class Board {
         }
         window.update();
     }
-    
-    public String getPieceAt(int column, int row){
+    protected String getPieceAt(int column, int row){
         
         if((whitePawns & (1L <<coordsShiftBits(column,row))) != 0)
             return "WP";
@@ -353,6 +246,16 @@ public class Board {
             return "BK";
 
         return " ";
+    }
+    protected boolean isKingUnderCheck(String color){
+        for (int i = 0; i < 64; i++)
+            if(getPieceAt(i/8+1,i%8+1).length() > 1 && getPieceAt(i/8+1,i%8+1).equals(color+"K")){
+                for (int j = 0; j < 64; j++)
+                    if(Rules.isPieceAllowedToMoveAt(this,j/8+1,j%8+1,i/8+1,-(i%8+1)))
+                        return false;
+                i=64;
+            }
+        return false;
     }
     private char coordsShiftBits(int column, int row){
         return (char) ((column - 1) * 8 + row -1);
