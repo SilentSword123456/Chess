@@ -251,8 +251,10 @@ public class Board {
         for (int i = 0; i < 64; i++)
             if(getPieceAt(i/8+1,i%8+1).length() > 1 && getPieceAt(i/8+1,i%8+1).equals(color+"K")){
                 for (int j = 0; j < 64; j++)
-                    if(Rules.isPieceAllowedToMoveAt(this,j/8+1,j%8+1,i/8+1,-(i%8+1)))
-                        return false;
+                    if (!getPieceAt(j/8+1,j%8+1).equals(" ") &&
+                        getPieceAt(j/8+1,j%8+1).charAt(0) != color.charAt(0) &&
+                        Rules.isPieceAllowedToMoveAt(this,j/8+1,j%8+1,i/8+1,-(i%8+1)))
+                        return true;
                 i=64;
             }
         return false;

@@ -12,8 +12,14 @@ public class Rules {
             isCalledFromKingMethod = true;
             targetRow *= -1;
         }
-        if(!isCalledFromKingMethod && board.isKingUnderCheck(String.valueOf(piece.charAt(0))))
+
+        if (!isCalledFromKingMethod && board.isKingUnderCheck(String.valueOf(piece.charAt(0))) &&
+                board.getPieceAt(currentColumn,currentRow).length() > 1 &&
+                board.getPieceAt(currentColumn,currentRow).charAt(1) != 'K')
             return false;
+        if(piece.equals("WK") || piece.equals("BK")) {
+            return canKingMoveAt(currentColumn, currentRow, targetColumn, targetRow, isCalledFromCheckMethod, board, piece);
+        }
 
         if(piece.equals("WP")){
             if((targetColumn == currentColumn - 1 || targetColumn == currentColumn + 1) &&
@@ -91,8 +97,6 @@ public class Rules {
             if(nextColumn >= 1 && nextColumn <= 8 && nextRow >= 1 && nextRow <= 8 && nextColumn == targetColumn && nextRow == targetRow)
                 return true;
         }
-        if(piece.equals("WK") || piece.equals("BK"))
-            return canKingMoveAt(currentColumn, currentRow, targetColumn, targetRow, isCalledFromCheckMethod, board, piece);
 
         return false;
     }
